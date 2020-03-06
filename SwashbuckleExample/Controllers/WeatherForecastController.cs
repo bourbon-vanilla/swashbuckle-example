@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SwashbuckleExample.Dto;
 
 namespace SwashbuckleExample.Controllers
 {
@@ -35,5 +36,23 @@ namespace SwashbuckleExample.Controllers
             })
             .ToArray();
         }
+
+        /// <summary>
+        /// Get specific forecast.
+        /// </summary>
+        /// <param name="forecastId">The id of the forecast to get.</param>
+        /// <returns>The specific weather forecast.</returns>
+        [HttpGet("forecastId")]
+        public WeatherForecast Get(int forecastId)
+        {
+            var rng = new Random();
+            return new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(forecastId),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            };
+        }
+
     }
 }

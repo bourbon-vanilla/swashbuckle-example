@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +21,7 @@ namespace SwashbuckleExample
         private const string API_NAME = "The API";
 
         private string _openApiSpecAddress = $"/swagger/{OPEN_API_SPECIFICATION_NAME}/swagger.json";
-        private string _uiAddress = $"/swagger/index.html";
+        private string _uiAddress = $"index.html";
 
 
         public Startup(IConfiguration configuration)
@@ -43,6 +45,10 @@ namespace SwashbuckleExample
                         Title = API_NAME,
                         Version = "1"
                     });
+
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommentsFullPath);
             });
         }
 
@@ -72,6 +78,7 @@ namespace SwashbuckleExample
                 setupAction.SwaggerEndpoint(
                     _openApiSpecAddress,
                     API_NAME);
+                setupAction.RoutePrefix = string.Empty;
             });
         }
     }
