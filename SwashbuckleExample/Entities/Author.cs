@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SwashbuckleExample.Entities
 {
+#pragma warning disable CS1591
+
     [Table("Authors")]
     public class Author
     {
@@ -21,4 +23,6 @@ namespace SwashbuckleExample.Entities
 
         public ICollection<Book> Books { get; set; } = new List<Book>();
     }
+
+#pragma warning restore CS1591
 }

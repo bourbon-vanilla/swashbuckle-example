@@ -43,7 +43,19 @@ namespace SwashbuckleExample
                     new Microsoft.OpenApi.Models.OpenApiInfo()
                     {
                         Title = API_NAME,
-                        Version = "1"
+                        Version = "1",
+                        Description = "Through this API you can access books, authors and the weather forecast :)",
+                        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                        {
+                            Email = "john.doe@email.com",
+                            Name = "John Doe",
+                            Url = new Uri("https://my.homepage.com")
+                        },
+                        License = new Microsoft.OpenApi.Models.OpenApiLicense
+                        {
+                            Name = "MIT License",
+                            Url = new Uri("https://opensource.org/licenses/MIT")
+                        }
                     });
 
                 var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
