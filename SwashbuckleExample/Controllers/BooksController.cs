@@ -5,6 +5,7 @@ using SwashbuckleExample.Dto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 
 namespace SwashbuckleExample.Controllers
@@ -27,6 +28,9 @@ namespace SwashbuckleExample.Controllers
             _mapper = mapper;
         }
 
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
         [HttpGet()]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
         Guid authorId)
@@ -40,6 +44,15 @@ namespace SwashbuckleExample.Controllers
             return Ok(_mapper.Map<IEnumerable<Book>>(booksFromRepo));
         }
 
+        /// <summary>
+        /// Get a book by id for a specific author.
+        /// </summary>
+        /// <param name="authorId">The id of the book author.</param>
+        /// <param name="bookId">The id of the book.</param>
+        /// <returns>An ActionResult of type Book.</returns>
+        /// <response code="200">Returns the requested book.</response>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{bookId}")]
         public async Task<ActionResult<Book>> GetBook(
             Guid authorId,
