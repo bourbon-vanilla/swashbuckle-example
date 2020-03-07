@@ -1,57 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using SwashbuckleExample.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using SwashbuckleExample.Dto;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 
 namespace SwashbuckleExample.Controllers
 {
-    //[ApiController]
-    //[Route("[controller]")]
-    //public class BooksController : ControllerBase
-    //{
-    //    private static readonly string[] Summaries = new[]
-    //    {
-    //        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    //    };
+    [Route("api/authors/{authorId}/books")]
+    [ApiController]
+    public class BooksController : ControllerBase
+    {
+        private readonly IBookRepository _bookRepository;
+        private readonly IAuthorRepository _authorRepository;
+        private readonly IMapper _mapper;
 
-    //    private readonly ILogger<BooksController> _logger;
+        public BooksController(
+            IBookRepository bookRepository,
+            IAuthorRepository authorRepository,
+            IMapper mapper)
+        {
+            _bookRepository = bookRepository;
+            _authorRepository = authorRepository;
+            _mapper = mapper;
+        }
 
-    //    public BooksController(ILogger<BooksController> logger)
-    //    {
-    //        _logger = logger;
-    //    }
+        [HttpGet()]
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
+        Guid authorId)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
 
-    //    [HttpGet]
-    //    public IEnumerable<WeatherForecast> Get()
-    //    {
-    //        var rng = new Random();
-    //        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-    //        {
-    //            Date = DateTime.Now.AddDays(index),
-    //            TemperatureC = rng.Next(-20, 55),
-    //            Summary = Summaries[rng.Next(Summaries.Length)]
-    //        })
-    //        .ToArray();
-    //    }
+            var booksFromRepo = await _bookRepository.GetBooksAsync(authorId);
+            return Ok(_mapper.Map<IEnumerable<Book>>(booksFromRepo));
+        }
 
-    //    /// <summary>
-    //    /// Get specific forecast.
-    //    /// </summary>
-    //    /// <param name="forecastId">The id of the forecast to get.</param>
-    //    /// <returns>The specific weather forecast.</returns>
-    //    [HttpGet("forecastId")]
-    //    public WeatherForecast Get(int forecastId)
-    //    {
-    //        var rng = new Random();
-    //        return new WeatherForecast
-    //        {
-    //            Date = DateTime.Now.AddDays(forecastId),
-    //            TemperatureC = rng.Next(-20, 55),
-    //            Summary = Summaries[rng.Next(Summaries.Length)]
-    //        };
-    //    }
+        [HttpGet("{bookId}")]
+        public async Task<ActionResult<Book>> GetBook(
+            Guid authorId,
+            Guid bookId)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
 
-    //}
+            var bookFromRepo = await _bookRepository.GetBookAsync(authorId, bookId);
+            if (bookFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(_mapper.Map<Book>(bookFromRepo));
+        }
+
+
+        [HttpPost()]
+        public async Task<ActionResult<Book>> CreateBook(
+            Guid authorId,
+            [FromBody] BookForCreation bookForCreation)
+        {
+            if (!await _authorRepository.AuthorExistsAsync(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookToAdd = _mapper.Map<Entities.Book>(bookForCreation);
+            _bookRepository.AddBook(bookToAdd);
+            await _bookRepository.SaveChangesAsync();
+
+            return CreatedAtRoute(
+                "GetBook",
+                new { authorId, bookId = bookToAdd.Id },
+                _mapper.Map<Book>(bookToAdd));
+        }
+    }
 }
