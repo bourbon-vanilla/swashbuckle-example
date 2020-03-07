@@ -8,7 +8,7 @@ https://localhost:44396/swagger/open-api-spec/swagger.json
 The address to get the ui (is set as default):<br>
 https://localhost:44396/index.html
 
-### Documentation
+### Xml-Documentation
 In order to activate the documentation of the API you have to activate the xml-comments in the project.<br>
 Next add the code to the `ConfigureServices`-method in Startup-class:
 
@@ -30,7 +30,9 @@ Next add the code to the `ConfigureServices`-method in Startup-class:
 
 In order to get return value comments you have to add xml-comments to the DTO-types, which will be returned.
 
-You can add data annotations in order to extend the documentation:
+### Data Annotations
+
+You can add data annotations in order to extend the documentation i.e. of DTOs (data transfer objects):
 ```csharp
     [Required]
     [MaxLength(150)]
@@ -48,10 +50,10 @@ Add attributes and comments to extend the generated open API specification by po
         /// <param name="authorId">The id of the book author.</param>
         /// <param name="bookId">The id of the book.</param>
         /// <returns>An ActionResult of type Book.</returns>
-        <b>/// <response code="200">Returns the requested book.</response>
+        /// <response code="200">Returns the requested book.</response>
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]</b>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{bookId}")]
         public async Task<ActionResult<Book>> GetBook(
     ...
@@ -62,7 +64,7 @@ If you know, that every method in your controller produces a specific response, 
 ```csharp
     [Route("api/authors/{authorId}/books")]
     [ApiController]
-    *[ProducesResponseType(StatusCodes.Status400BadRequest)]*
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public class BooksController : ControllerBase
@@ -77,12 +79,12 @@ If the response types apply even for all methods in all controllers you can defi
         {
             services.AddMvc(setupAction =>
             {
-                <b>setupAction.Filters.Add(
+                setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status400BadRequest));
                 setupAction.Filters.Add(
                     new ProducesResponseTypeAttribute(StatusCodes.Status406NotAcceptable));
                 setupAction.Filters.Add(
-                    new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));</b>
+                    new ProducesResponseTypeAttribute(StatusCodes.Status500InternalServerError));
             });
         ...
 ```
