@@ -62,9 +62,9 @@ If you know, that every method in your controller produces a specific response, 
 ```csharp
     [Route("api/authors/{authorId}/books")]
     [ApiController]
-    <b>[ProducesResponseType(StatusCodes.Status400BadRequest)]
+    *[ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status406NotAcceptable)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]</b>
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]*
     public class BooksController : ControllerBase
     {
         ...
