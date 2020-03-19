@@ -1,4 +1,18 @@
 # swashbuckle-example
+## Intro
+This is an example of creating an open API (Swagger) documentation/specification using Swashbuckle.
+
+### Used Software Building Blocks
+* Dependency Inversion
+* Logging
+* EF Core
+* EF Core - In Memory
+* Repositories
+* Basic Authentication
+* Automapper
+* Open Api Documentation
+
+### The Project
 
 This is an ASP NET Core 3.1 application.
 
@@ -12,7 +26,7 @@ For authorisation scenario the user is *user* and password is *password*.<br>
 ![Overview](images/overview.png)
 <p align="center"><i>The <b>UI</b></i></p>
 
-
+## Comments to Creation of the Open API Specification
 ### Xml-Documentation
 In order to activate the documentation of the API you have to activate the xml-comments in the project.<br>
 Next add the code to the `ConfigureServices`-method in Startup-class:
