@@ -10,7 +10,8 @@ This is an example of creating an open API (Swagger) documentation/specification
 * Repositories
 * Basic Authentication
 * Automapper
-* Open Api Documentation
+* Open API Documentation
+* Web API Versioning
 
 ### The Project
 
